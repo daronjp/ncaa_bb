@@ -17,6 +17,14 @@ teams <- aggregate(teamScore ~ Team, data=teams, FUN=sum)
 teams <- teams[order(-teams$teamScore),]
 teams[(teams$teamScore) < 50, 'elo'] <- 400
 teams[is.na(teams$elo), 'elo'] <- 1000
+teams$Team <- as.character(teams$Team)
+
+team1 <- as.character(three$Team[3])
+team2 <- as.character(three$Opponent[3])
+t1elo <- subset(teams, Team == team1)
+t1elo <- t1elo$elo[1]
+t2elo <- subset(teams, Team == team2)
+t2elo <- t2elo$elo[1]
 
 
 # teams <- read.csv("schools.csv")
