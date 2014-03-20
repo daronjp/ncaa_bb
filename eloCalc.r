@@ -18,13 +18,57 @@ teams <- teams[order(-teams$teamScore),]
 teams[(teams$teamScore) < 50, 'elo'] <- 400
 teams[is.na(teams$elo), 'elo'] <- 1000
 teams$Team <- as.character(teams$Team)
+teams$index <- 1:nrow(teams)
 
-team1 <- as.character(three$Team[3])
-team2 <- as.character(three$Opponent[3])
-t1elo <- subset(teams, Team == team1)
-t1elo <- t1elo$elo[1]
+x <- 1
+while(x <= nrow(three)){
+team1 <- as.character(three$Team[x])
+team2 <- as.character(three$Opponent[x])
+t1 <- subset(teams, Team == team1)
+t1elo <- t1$elo[1]
+t1index <- t1$index[1]
 t2elo <- subset(teams, Team == team2)
 t2elo <- t2elo$elo[1]
+result <- as.character(three$result[x])
+if(result == 'Win'){
+  score <- 1
+} else {
+  score <- 0
+}
+t1new <- t1elo + 32*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
+
+teams$elo[t1index] <- t1new
+
+x <- x + 1
+}
+
+x <- 1
+while(x <= nrow(four)){
+  team1 <- as.character(four$Team[x])
+  team2 <- as.character(four$Opponent[x])
+  t1 <- subset(teams, Team == team1)
+  t1elo <- t1$elo[1]
+  t1index <- t1$index[1]
+  t2elo <- subset(teams, Team == team2)
+  t2elo <- t2elo$elo[1]
+  result <- as.character(four$result[x])
+  if(result == 'Win'){
+    score <- 1
+  } else {
+    score <- 0
+  }
+  t1new <- t1elo + 32*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
+  
+  teams$elo[t1index] <- t1new
+  
+  x <- x + 1
+}
+
+teams <- teams[order(-teams$elo),]
+
+write.csv(teams, "teamRankings.csv")
+
+
 
 
 # teams <- read.csv("schools.csv")
