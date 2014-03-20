@@ -35,7 +35,7 @@ if(result == 'Win'){
 } else {
   score <- 0
 }
-t1new <- t1elo + 32*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
+t1new <- t1elo + 150*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
 
 teams$elo[t1index] <- t1new
 
@@ -57,7 +57,7 @@ while(x <= nrow(four)){
   } else {
     score <- 0
   }
-  t1new <- t1elo + 32*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
+  t1new <- t1elo + 150*(score - (1/(1+(10^(((t2elo-t1elo)/1000))))))
   
   teams$elo[t1index] <- t1new
   
@@ -68,7 +68,20 @@ teams <- teams[order(-teams$elo),]
 
 write.csv(teams, "teamRankings.csv")
 
-
+matchup <- function(team1, team2){
+  t1 <- subset(teams, Team == team1)
+  t1elo <- t1$elo[1]
+  t2elo <- subset(teams, Team == team2)
+  t2elo <- t2elo$elo[1]
+ t1pct <- round(100*(1/(1+(10^(((t2elo-t1elo)/1000))))))
+ result <- round(mean(sample(100,3,replace=TRUE)))
+ if(result <= t1pct){
+   winner <- team1
+ } else {
+   winner <- team2
+ }
+ return(c(winner, t1pct, team1))
+}
 
 
 # teams <- read.csv("schools.csv")
